@@ -1,4 +1,4 @@
-package com.snnc_993.mymusic.helper;
+package com.snnc_993.mymusic.utils;
 
 import androidx.annotation.NonNull;
 

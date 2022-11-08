@@ -2,6 +2,7 @@ package com.snnc_993.mymusic.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.snnc_993.mymusic.R;
@@ -34,14 +36,11 @@ import com.snnc_993.mymusic.model.SongModel;
 import com.snnc_993.mymusic.model.TopicModel;
 import com.snnc_993.mymusic.service.APIService;
 import com.snnc_993.mymusic.service.DataService;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+import com.snnc_993.mymusic.utils.SimpleRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -118,21 +117,18 @@ public class DetailFragment extends Fragment {
     }
 
     private void initToolBarAnimation() {
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.BaseOnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                int maxOffset = appBarLayout.getHeight() - (int) requireContext().getResources().getDimension(R.dimen.custom_action_bar_size);
-                float alpha = (float) Math.abs(verticalOffset) * 100 / maxOffset;
-                if (rlDetailHeader.getAlpha() != alpha) {
-                    rlDetailHeader.setAlpha(1 - (float) Math.abs(verticalOffset) / maxOffset);
-                    if (Math.abs(verticalOffset) == maxOffset) {
-                        if(tvTitleToolbar.getText().toString().isEmpty()){
-                            tvTitleToolbar.setText(card.getName());
-                        }
-                    } else {
-                        if(!tvTitleToolbar.getText().toString().isEmpty()){
-                            tvTitleToolbar.setText("");
-                        }
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            int maxOffset = appBarLayout.getHeight() - (int) requireContext().getResources().getDimension(R.dimen.custom_action_bar_size);
+            float alpha = (float) Math.abs(verticalOffset) * 100 / maxOffset;
+            if (rlDetailHeader.getAlpha() != alpha) {
+                rlDetailHeader.setAlpha(1 - (float) Math.abs(verticalOffset) / maxOffset);
+                if (Math.abs(verticalOffset) == maxOffset) {
+                    if (tvTitleToolbar.getText().toString().isEmpty()) {
+                        tvTitleToolbar.setText(card.getName());
+                    }
+                } else {
+                    if (!tvTitleToolbar.getText().toString().isEmpty()) {
+                        tvTitleToolbar.setText("");
                     }
                 }
             }
@@ -141,15 +137,13 @@ public class DetailFragment extends Fragment {
 
     private void initData() {
         rlDetailHeader.setVisibility(View.VISIBLE);
-        RequestCreator requestCreator = Picasso.with(getContext()).load(card.getImg());
-        requestCreator.into(imgCard);
-
+        Glide.with(this).load(card.getImg()).into(imgCard);
         if (card instanceof TopicModel) {
             CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsingToolbarLayout);
             collapsingToolbarLayout.setContentScrimColor(Color.parseColor(Constant.COLOR_PRIMARY));
             overlay.setBackgroundResource(R.drawable.custom_overlay_card_white);
-            ((RelativeLayout.LayoutParams) rcvSong.getLayoutParams()).leftMargin = (int) getContext().getResources().getDimension(R.dimen.space_view);
-            ((RelativeLayout.LayoutParams) rcvSong.getLayoutParams()).bottomMargin = (int) getContext().getResources().getDimension(R.dimen.space_view);
+            ((RelativeLayout.LayoutParams) rcvSong.getLayoutParams()).leftMargin = (int) getResources().getDimension(R.dimen.space_view);
+            ((RelativeLayout.LayoutParams) rcvSong.getLayoutParams()).bottomMargin = (int) getResources().getDimension(R.dimen.space_view);
 
             CardAdapter adapter = new CardAdapter(getContext(), mListCard, false);
             rcvSong.setAdapter(adapter);
@@ -157,10 +151,12 @@ public class DetailFragment extends Fragment {
             rcvSong.setLayoutManager(manager);
             return;
         }
-        requestCreator.placeholder(R.drawable.custom_overlay_black).transform(new BlurTransformation(requireContext(), 25, 1)).into(imgBackground);
-//        MainActivity.loadBackGroundImage(getContext(), card.getImg(), bitmap -> {
-//            Blurry.with(getContext()).from(bitmap).into(imgBackground);
-//        });
+        Glide.with(this)
+                .asBitmap()
+                .load(card.getImg())
+                .placeholder(R.drawable.custom_overlay_black)
+                .addListener(new SimpleRequest(imgBackground))
+                .submit();
 
         titleCard.setText(card.getName());
         if (card instanceof AlbumModel) {
@@ -198,6 +194,7 @@ public class DetailFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<CategoryModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: ", t);
             }
         });
     }

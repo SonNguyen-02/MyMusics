@@ -2,17 +2,21 @@ package com.snnc_993.mymusic.service;
 
 import static com.snnc_993.mymusic.application.MyApplication.CHANNEL_ID;
 import static com.snnc_993.mymusic.config.Constant.*;
-import static com.snnc_993.mymusic.helper.Helper.convertListSongFromJson;
-import static com.snnc_993.mymusic.helper.Helper.convertSongFromJson;
+import static com.snnc_993.mymusic.utils.Helper.convertListSongFromJson;
+import static com.snnc_993.mymusic.utils.Helper.convertSongFromJson;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -24,13 +28,17 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.activity.MainActivity;
 import com.snnc_993.mymusic.broadcast.MyReceiver;
 import com.snnc_993.mymusic.model.SongModel;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -152,7 +160,6 @@ public class MusicService extends Service {
         }
         updateView();
     }
-
 
 
     private void initData() {
@@ -385,7 +392,7 @@ public class MusicService extends Service {
     private void sendNotificationMusic(SongModel song) {
         Intent intent = new Intent(this, MainActivity.class);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, getFlag());
 
         RemoteViews remoteCollapsed = getRemoteViewCollapsed(song);
 
@@ -396,10 +403,18 @@ public class MusicService extends Service {
                 .setCustomContentView(remoteCollapsed)
                 .setCustomBigContentView(remoteExpanded)
                 .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setSound(getSound(), AudioManager.STREAM_NOTIFICATION)
                 .build();
-        startForeground(1, notification);
-        Picasso.with(this).load(song.getImg()).into(notification.contentView, R.id.img_song_notification, 1, notification);
-        Picasso.with(this).load(song.getImg()).into(notification.bigContentView, R.id.img_song_notification, 1, notification);
+        loadImage(song.getImg(), image -> {
+            if (image != null) {
+                remoteCollapsed.setImageViewBitmap(R.id.img_song_notification, image);
+                remoteExpanded.setImageViewBitmap(R.id.img_song_notification, image);
+            }
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(1, notification);
+            startForeground(1, notification);
+        });
     }
 
     @NonNull
@@ -444,7 +459,7 @@ public class MusicService extends Service {
     private PendingIntent getPendingIntent(Context context, int action) {
         Intent intent = new Intent(this, MyReceiver.class);
         intent.putExtra(KEY_ACTION_MUSIC, action);
-        return PendingIntent.getBroadcast(context, action, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, action, intent, getFlag());
     }
 
     private void sendActionToActivity(Bundle bundle, String action) {
@@ -471,7 +486,7 @@ public class MusicService extends Service {
         editor.apply();
     }
 
-    public static int getPosition(){
+    public static int getPosition() {
         return position;
     }
 
@@ -499,6 +514,41 @@ public class MusicService extends Service {
             media.release();
             media = null;
         }
+    }
+
+    private int getFlag() {
+        int flag = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flag |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        return flag;
+    }
+
+    private Uri getSound() {
+        return Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.empty_sound);
+    }
+
+    private void loadImage(String url, LoadImageListener listener) {
+        Glide.with(this)
+                .asBitmap()
+                .load(url)
+                .listener(new RequestListener<Bitmap>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                        listener.onLoadDone(null);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        listener.onLoadDone(resource);
+                        return false;
+                    }
+                }).submit();
+    }
+
+    private interface LoadImageListener {
+        void onLoadDone(Bitmap image);
     }
 
 }

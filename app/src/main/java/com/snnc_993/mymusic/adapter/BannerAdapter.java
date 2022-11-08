@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.bumptech.glide.Glide;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.model.AdsModel;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -93,8 +93,8 @@ public class BannerAdapter extends PagerAdapter {
         TextView contentBanner = view.findViewById(R.id.tv_content_banner);
 
         AdsModel ads = mAdsModelList.get(position);
-        Picasso.with(context).load(ads.getAdsImg()).into(imgBackground);
-        Picasso.with(context).load(ads.getSongImg()).into(imgSongIcon);
+        Glide.with(context).load(ads.getAdsImg()).into(imgBackground);
+        Glide.with(context).load(ads.getSongImg()).into(imgSongIcon);
         titleBanner.setText(ads.getSongName());
         contentBanner.setText(ads.getAdsContent());
 

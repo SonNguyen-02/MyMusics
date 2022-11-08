@@ -11,13 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.activity.ISendDataToDetail;
 import com.snnc_993.mymusic.activity.MainActivity;
 import com.snnc_993.mymusic.model.AlbumModel;
 import com.snnc_993.mymusic.model.CardModel;
 import com.snnc_993.mymusic.model.SongModel;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardItemViewHo
             holder.imgThumb.getLayoutParams().height = itemLength;
         }
         // viết api trả data
-        Picasso.with(context).load(card.getImg()).placeholder(R.drawable.ic_logo).into(holder.imgThumb);
+        Glide.with(context).load(card.getImg()).placeholder(R.drawable.ic_logo).into(holder.imgThumb);
         holder.titleCard.setText(card.getName());
 
         if (card instanceof AlbumModel) {

@@ -3,6 +3,7 @@ package com.snnc_993.mymusic.fragment;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,7 +72,7 @@ public class BannerFragment extends Fragment {
         callback.enqueue(new Callback<List<AdsModel>>() {
             @Override
             public void onResponse(@NonNull Call<List<AdsModel>> call, @NonNull Response<List<AdsModel>> response) {
-                mBannerAdapter = new BannerAdapter(getActivity(),  response.body());
+                mBannerAdapter = new BannerAdapter(getActivity(), response.body());
                 mViewPager.setAdapter(mBannerAdapter);
                 mCircleIndicator.setViewPager(mViewPager);
 
@@ -89,6 +90,7 @@ public class BannerFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<AdsModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: "+t.getMessage(), t);
             }
         });
     }

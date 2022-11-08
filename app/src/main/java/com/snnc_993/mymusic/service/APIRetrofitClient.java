@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIRetrofitClient {
-    private static Retrofit retrofit = null;
 
     public static Retrofit getClient(String baseUrl){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -24,12 +23,10 @@ public class APIRetrofitClient {
                 .build();
         Gson gson = new GsonBuilder().setLenient().create();
 
-        retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-
-        return retrofit;
     }
 }

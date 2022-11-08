@@ -18,6 +18,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.snnc_993.mymusic.R;
@@ -41,7 +43,6 @@ import com.snnc_993.mymusic.model.TopicModel;
 import com.snnc_993.mymusic.service.APIService;
 import com.snnc_993.mymusic.service.DataService;
 import com.snnc_993.mymusic.service.MusicService;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements ISendDataToDetail
                         if (tvSingerName.getVisibility() != View.VISIBLE) {
                             tvSingerName.setVisibility(View.VISIBLE);
                         }
-                        Picasso.with(MainActivity.this).load(mCurrentSong.getImg()).into(imgThumb);
+                        Glide.with(MainActivity.this).load(mCurrentSong.getImg()).into(imgThumb);
                     }
                     updateCurrentTime();
                 }
@@ -148,9 +149,7 @@ public class MainActivity extends AppCompatActivity implements ISendDataToDetail
             }
         });
 
-        imgNext.setOnClickListener(view -> {
-            startForegroundService(NEXT_SONG);
-        });
+        imgNext.setOnClickListener(view -> startForegroundService(NEXT_SONG));
 
         if (MusicService.getMedia() == null) {
             // khoi tao bai hat cuoi khi chay lai app
@@ -263,13 +262,10 @@ public class MainActivity extends AppCompatActivity implements ISendDataToDetail
             }
             if (action == Action.SHOW_MODAL) {
                 if (card instanceof TopicModel) {
-                    initCategory(Integer.parseInt(card.getId()), list -> {
-                        addFragmentToMainFrame(new DetailFragment(list, card), "Category");
-                    });
+                    initCategory(Integer.parseInt(card.getId()),
+                            list -> addFragmentToMainFrame(new DetailFragment(list, card), "Category"));
                 } else {
-                    initListSong(card, list -> {
-                        addFragmentToMainFrame(new DetailFragment(card, list), "Detail");
-                    });
+                    initListSong(card, list -> addFragmentToMainFrame(new DetailFragment(card, list), "Detail"));
                 }
             }
         }
@@ -371,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements ISendDataToDetail
                 @Override
                 public void onFailure(@NonNull Call<List<SongModel>> call, @NonNull Throwable t) {
                     cb.callback(null);
+                    Log.e("ddd", "onFailure: ", t);
                 }
             });
         }
@@ -396,6 +393,7 @@ public class MainActivity extends AppCompatActivity implements ISendDataToDetail
             @Override
             public void onFailure(@NonNull Call<List<CategoryModel>> call, @NonNull Throwable t) {
                 cb.callback(null);
+                Log.e("ddd", "onFailure: ", t);
             }
         });
     }

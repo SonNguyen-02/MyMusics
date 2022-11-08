@@ -22,12 +22,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bumptech.glide.Glide;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.activity.PlayMusicActivity;
 import com.snnc_993.mymusic.config.Constant;
 import com.snnc_993.mymusic.model.SongModel;
 import com.snnc_993.mymusic.service.MusicService;
-import com.squareup.picasso.Picasso;
 
 public class MainSongFragment extends Fragment {
 
@@ -46,7 +46,7 @@ public class MainSongFragment extends Fragment {
                 SongModel song = (SongModel) bundle.getSerializable(KEY_CURRENT_SONG);
                 if (song != null && song != mSong && MusicService.getMedia() != null) {
                     mSong = song;
-                    Picasso.with(getContext()).load(mSong.getImg()).into(imgSong);
+                    Glide.with(context).load(mSong.getImg()).into(imgSong);
                 }
             }
         }
@@ -85,7 +85,7 @@ public class MainSongFragment extends Fragment {
         llPlaylist.setOnClickListener(view -> ((PlayMusicActivity) requireActivity()).showPlaylistFragment());
 
         if (mSong != null) {
-            Picasso.with(getContext()).load(mSong.getImg()).into(imgSong);
+            Glide.with(this).load(mSong.getImg()).into(imgSong);
             if (isPlaying) {
                 startAnim();
             }

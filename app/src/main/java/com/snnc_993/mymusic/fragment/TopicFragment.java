@@ -1,6 +1,7 @@
 package com.snnc_993.mymusic.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class TopicFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<TopicModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: ", t);
             }
         });
     }

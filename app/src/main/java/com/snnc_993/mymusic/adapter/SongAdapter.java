@@ -6,19 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.activity.ISendDataToDetail;
 import com.snnc_993.mymusic.activity.MainActivity;
 import com.snnc_993.mymusic.activity.PlayMusicActivity;
 import com.snnc_993.mymusic.model.SongModel;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -72,7 +70,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         if (song == null) {
             return;
         }
-        Picasso.with(context).load(song.getImg()).placeholder(R.drawable.ic_logo).into(holder.imgThumb);
+        Glide.with(context).load(song.getImg()).placeholder(R.drawable.ic_logo).into(holder.imgThumb);
         holder.tvSongName.setText(song.getName());
         holder.tvSingerName.setText(song.getSingerName());
 
@@ -81,9 +79,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         }
 
         if (mISendDataToDetail != null) {
-            holder.itemView.setOnClickListener(view -> {
-                mISendDataToDetail.sendDataListener(mListSong, position);
-            });
+            holder.itemView.setOnClickListener(view -> mISendDataToDetail.sendDataListener(mListSong, position));
         }
 
         if (type == TYPE_SUGGEST) {

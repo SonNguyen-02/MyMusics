@@ -79,6 +79,12 @@
         <entry key="..\:/All_File_Learn/Java/Android/MyMusics/app/src/main/res/menu/menu_home_top_tab.xml" value="0.36666666666666664" />
         <entry key="..\:/All_File_Learn/Java/Android/MyMusics/app/src/main/res/menu/menu_left_navigation.xml" value="0.36666666666666664" />
         <entry key="..\:/All_File_Learn/Java/Android/MyMusics/app/src/main/res/menu/menu_nav.xml" value="0.33" />
+        <entry key="..\:/Android/Projects/Work/MyMusics/app/src/main/res/drawable/custom_overlay_black.xml" value="0.2015" />
+        <entry key="..\:/Android/Projects/Work/MyMusics/app/src/main/res/drawable/seek_bar_text_thumb.xml" value="0.2305" />
+        <entry key="..\:/Android/Projects/Work/MyMusics/app/src/main/res/drawable/shape_seek_bar_text_thumb.xml" value="0.2305" />
+        <entry key="..\:/Android/Projects/Work/MyMusics/app/src/main/res/layout/activity_play_music.xml" value="0.3536458333333333" />
+        <entry key="..\:/Android/Projects/Work/MyMusics/app/src/main/res/layout/layout_music_play_notification_collapsed.xml" value="0.33" />
+        <entry key="..\:/Android/Projects/Work/MyMusics/app/src/main/res/layout/layout_music_play_notification_expanded.xml" value="0.33" />
       </map>
     </option>
   </component>

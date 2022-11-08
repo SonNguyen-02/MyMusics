@@ -13,12 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.activity.PlayMusicActivity;
 import com.snnc_993.mymusic.model.SongModel;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class SongSpecialAdapter extends RecyclerView.Adapter<SongSpecialAdapter.
 
         holder.tvSongName.setText(song.getName());
         holder.tvSingerName.setText(song.getSingerName());
-        Picasso.with(context).load(song.getImg()).placeholder(R.drawable.ic_logo).into(holder.imgThumb);
+        Glide.with(context).load(song.getImg()).placeholder(R.drawable.ic_logo).into(holder.imgThumb);
 
         if (mIOnClickSongItem != null) {
             holder.rlItem.setOnClickListener(view -> mIOnClickSongItem.onClickSongItem(song));

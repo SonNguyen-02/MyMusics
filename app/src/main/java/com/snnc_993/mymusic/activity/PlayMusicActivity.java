@@ -1,13 +1,31 @@
 package com.snnc_993.mymusic.activity;
 
 
-import static com.snnc_993.mymusic.config.Constant.*;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager2.widget.ViewPager2;
+import static com.snnc_993.mymusic.config.Constant.ADD_SONG;
+import static com.snnc_993.mymusic.config.Constant.KEY_ACTION_MUSIC;
+import static com.snnc_993.mymusic.config.Constant.KEY_CURRENT_SONG;
+import static com.snnc_993.mymusic.config.Constant.KEY_DATA_TO_PLAY_MUSIC;
+import static com.snnc_993.mymusic.config.Constant.KEY_IS_LOAD_SUCCESS;
+import static com.snnc_993.mymusic.config.Constant.KEY_IS_PLAYING;
+import static com.snnc_993.mymusic.config.Constant.KEY_LAST_MODE_PLAY;
+import static com.snnc_993.mymusic.config.Constant.KEY_SONG_OBJ;
+import static com.snnc_993.mymusic.config.Constant.KEY_TIME_SEEK_SONG;
+import static com.snnc_993.mymusic.config.Constant.NEXT_SONG;
+import static com.snnc_993.mymusic.config.Constant.NORMAL_MODE;
+import static com.snnc_993.mymusic.config.Constant.PAUSE_SONG;
+import static com.snnc_993.mymusic.config.Constant.PLAY_NEW_SONG;
+import static com.snnc_993.mymusic.config.Constant.PLAY_SONG;
+import static com.snnc_993.mymusic.config.Constant.PREV_SONG;
+import static com.snnc_993.mymusic.config.Constant.REPEAT_MODE;
+import static com.snnc_993.mymusic.config.Constant.REPEAT_ONE_MODE;
+import static com.snnc_993.mymusic.config.Constant.REPEAT_SONG;
+import static com.snnc_993.mymusic.config.Constant.SEEK_SONG;
+import static com.snnc_993.mymusic.config.Constant.SEND_STATUS_AUDIO;
+import static com.snnc_993.mymusic.config.Constant.SEND_STATUS_LOAD_AUDIO;
+import static com.snnc_993.mymusic.config.Constant.SEND_TO_ACTIVITY;
+import static com.snnc_993.mymusic.config.Constant.SHARED_PRE_NAME;
+import static com.snnc_993.mymusic.config.Constant.SHUFFLE_MODE;
+import static com.snnc_993.mymusic.config.Constant.SHUFFLE_SONG;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -24,6 +42,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.bumptech.glide.Glide;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.adapter.PlayMusicViewPagerAdapter;
 import com.snnc_993.mymusic.adapter.SongAdapter;
@@ -32,10 +57,9 @@ import com.snnc_993.mymusic.fragment.PlaylistSongFragment;
 import com.snnc_993.mymusic.model.SongModel;
 import com.snnc_993.mymusic.service.MusicService;
 import com.snnc_993.mymusic.transformer.ZoomOutPageTransformer;
+import com.snnc_993.mymusic.utils.SimpleRequest;
 import com.snnc_993.mymusic.view.TextThumbSeekBar;
-import com.squareup.picasso.Picasso;
 
-import jp.wasabeef.picasso.transformations.BlurTransformation;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class PlayMusicActivity extends AppCompatActivity implements SongAdapter.IOnClickSongItem, SongAdapter.IOnClickAddSong, SongSpecialAdapter.IOnClickSongItem {
@@ -70,7 +94,12 @@ public class PlayMusicActivity extends AppCompatActivity implements SongAdapter.
 
                     if (mSong != song) {
                         mSong = song;
-                        Picasso.with(getApplicationContext()).load(mSong.getImg()).placeholder(R.drawable.custom_overlay_black).transform(new BlurTransformation(getApplicationContext(), 25, 1)).into(imgBackground);
+                        Glide.with(getApplicationContext())
+                                .asBitmap()
+                                .load(mSong.getImg())
+                                .placeholder(R.drawable.custom_overlay_black)
+                                .addListener(new SimpleRequest(imgBackground))
+                                .submit();
                         tvSongName.setText(mSong.getName());
                         tvSingerName.setText(mSong.getSingerName());
                     }
@@ -108,9 +137,7 @@ public class PlayMusicActivity extends AppCompatActivity implements SongAdapter.
             LocalBroadcastManager.getInstance(this).registerReceiver(receiverFromMusicService, new IntentFilter(SEND_TO_ACTIVITY));
             LocalBroadcastManager.getInstance(this).registerReceiver(receiverWhenLoadAudio, new IntentFilter(SEND_STATUS_LOAD_AUDIO));
 
-            imgExpandActivity.setOnClickListener(v -> {
-                finish();
-            });
+            imgExpandActivity.setOnClickListener(v -> finish());
 
             mSong = (SongModel) bundle.getSerializable(KEY_DATA_TO_PLAY_MUSIC);
 
@@ -156,7 +183,7 @@ public class PlayMusicActivity extends AppCompatActivity implements SongAdapter.
         startService(bundle);
     }
 
-    private void startService(Bundle bundle){
+    private void startService(Bundle bundle) {
         Intent intent = new Intent(this, MusicService.class);
         intent.putExtras(bundle);
         startService(intent);
@@ -177,7 +204,12 @@ public class PlayMusicActivity extends AppCompatActivity implements SongAdapter.
             mViewPager2.setPageTransformer(new ZoomOutPageTransformer());
             mViewPager2.setCurrentItem(1);
             mCircleIndicator3.setViewPager(mViewPager2);
-            Picasso.with(getApplicationContext()).load(mSong.getImg()).placeholder(R.drawable.custom_overlay_black).transform(new BlurTransformation(getApplicationContext(), 25, 1)).into(imgBackground);
+            Glide.with(getApplicationContext())
+                    .asBitmap()
+                    .load(mSong.getImg())
+                    .placeholder(R.drawable.custom_overlay_black)
+                    .addListener(new SimpleRequest(imgBackground))
+                    .submit();
         }
     }
 
@@ -287,7 +319,7 @@ public class PlayMusicActivity extends AppCompatActivity implements SongAdapter.
         startForegroundService(PLAY_NEW_SONG, song);
     }
 
-   @Override
+    @Override
     public void onClickAddSong(SongModel song) {
         Toast.makeText(this, "Đã thêm vào danh sách", Toast.LENGTH_SHORT).show();
         startForegroundService(ADD_SONG, song);

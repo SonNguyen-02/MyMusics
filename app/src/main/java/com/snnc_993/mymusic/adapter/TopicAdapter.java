@@ -10,11 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.snnc_993.mymusic.R;
 import com.snnc_993.mymusic.activity.ISendDataToDetail;
 import com.snnc_993.mymusic.activity.MainActivity;
 import com.snnc_993.mymusic.model.TopicModel;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
         if(topic == null){
             return;
         }
-        Picasso.with(context).load(topic.getImg()).into(holder.imgThumb);
+        Glide.with(context).load(topic.getImg()).into(holder.imgThumb);
         holder.tvName.setText(topic.getName());
         if(mISendDataToDetail != null){
             holder.itemView.setOnClickListener(view -> mISendDataToDetail.sendDataListener(topic, ISendDataToDetail.Action.SHOW_MODAL));

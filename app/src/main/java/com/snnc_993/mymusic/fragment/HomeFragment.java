@@ -1,6 +1,7 @@
 package com.snnc_993.mymusic.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<AlbumModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: ", t);
             }
         });
 
@@ -79,6 +81,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<PlaylistModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: ", t);
             }
         });
 
@@ -93,6 +96,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<CategoryModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: ", t);
             }
         });
 
@@ -107,6 +111,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<SongModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: ", t);
             }
         });
 
@@ -129,7 +134,8 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<PlaylistModel>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<PlaylistModel>> call, @NonNull Throwable t) {
+                Log.e("ddd", "onFailure: ", t);
             }
         });
     }

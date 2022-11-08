@@ -2,7 +2,6 @@ package com.snnc_993.mymusic.service;
 
 import com.snnc_993.mymusic.model.AdsModel;
 import com.snnc_993.mymusic.model.AlbumModel;
-import com.snnc_993.mymusic.model.CardModel;
 import com.snnc_993.mymusic.model.CategoryModel;
 import com.snnc_993.mymusic.model.PlaylistModel;
 import com.snnc_993.mymusic.model.SongModel;

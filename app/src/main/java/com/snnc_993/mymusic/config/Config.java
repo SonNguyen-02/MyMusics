@@ -2,7 +2,7 @@ package com.snnc_993.mymusic.config;
 
 public class Config {
 
-    public static final String BASE_URL = "http://www.my-music-app.tk/";
+    public static final String BASE_URL = "http://csupport.tk/";
     public static final String BASE_API = BASE_URL + "api_music/";
     public static final String AUDIO_URL = "https://my-music-audio.000webhostapp.com/public/raw/";
     private static final String IMG_FOLDER = "public/images/music-app/";
